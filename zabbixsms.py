@@ -103,16 +103,6 @@ def ZabbixVar():
         Message = GetInfo()[0][u'description']
         Message = str(Message)
         Message = Message.replace("{HOSTNAME}", HName)
-        return (Priority, TrigID, HName, Message)
-
-
-def ZabbixVar():
-        Priority = GetInfo()[0][u'priority']
-        TrigID = GetInfo()[0][u'triggerid']
-        HName = GetHostName()[0][u'name']
-        Message = GetInfo()[0][u'description']
-        Message = str(Message)
-        Message = Message.replace("{HOSTNAME}", HName)
         return (int(Priority), TrigID, HName, Message)
 
 def ZabbixLog():
