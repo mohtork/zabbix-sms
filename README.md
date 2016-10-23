@@ -11,7 +11,7 @@ Zabbix-SMS needs Slacker module which you can simply install via
 # Usage
 you can run it manually 
 python zabixsms.py or it's better to run it as a cronjob, an example of cron job that execute zabbix-sms every 1 minitues
-1 * * * * pathto/zabbixsms.py
+*/1   *    *    *    * pathto/zabbixsms.py
 
 
 # Limits
