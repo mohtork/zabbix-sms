@@ -15,7 +15,7 @@ and it logs zabbix alerts.
 
 2. Add to Crons
 Edit crontab "crontab -e'
-* * * * *  /'path-to'/zabbix-sms/zabbixsms.py option 
+> * * * * *  /'path-to'/zabbix-sms/zabbixsms.py option 
 replace option with your preferred alert method 'slack, aws-sms or uniphonic '
 
 # Contact Me
