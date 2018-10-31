@@ -3,20 +3,20 @@ Python tool to send you sms notification when one of your host goes down or has 
 and it logs zabbix alerts.
 
  
-# Dependencies
-Zabbix-SMS needs Slacker module which you can simply install via
-- pip install slacker.  or you can get it from
-- https://github.com/os/slacker
+# Installation
+- git clone https://github.com/mohtork/zabbix-sms
+- pip install -r requirements.txt
 
 # Usage
-you can run it manually 
-python zabixsms.py or it's better to run it as a cronjob, an example of cron job that execute zabbix-sms every one minitue
-- *   *    *    *    * pathto/zabbixsms.py
+1. Manually 
+./zabbixsms.py slack #Send alerts to slack
+./zabbixsms.py aws-sms #Send alerts to your mobile , list of mobile numbers through aws sns
+./zabbixsms.py uniphonic #Use uniphonic as your sms gatewat
 
-
-# Limits
-- The tool support uniphonic sms gateway only , in the future it will support more gateways
-
+2. Add to Crons
+Edit crontab "crontab -e'
+* * * * *  /'path-to'/zabbix-sms/zabbixsms.py option 
+replace option with your preferred alert method 'slack, aws-sms or uniphonic '
 
 # Contact Me
 https://goo.gl/WD4T3r
