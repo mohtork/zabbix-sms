@@ -8,13 +8,13 @@ and it logs zabbix alerts.
 - pip install -r requirements.txt
 
 # Usage
-1. Manually 
+1. Manually<br/> 
 ./zabbixsms.py slack #Send alerts to slack<br/> 
 ./zabbixsms.py aws-sms #Send alerts to your mobile , list of mobile numbers through aws sns<br/> 
 ./zabbixsms.py uniphonic #Use uniphonic as your sms gatewat<br/> 
 
-2. Add to Crons
-Edit crontab "crontab -e'
+2. Add to Crons<br/>
+Edit crontab "crontab -e'<br/>
 * * * * *  /'path-to'/zabbix-sms/zabbixsms.py option<br/>  
 replace option with your preferred alert method 'slack, aws-sms or uniphonic<br/> 
 
