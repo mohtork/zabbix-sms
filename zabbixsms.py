@@ -1,11 +1,16 @@
 #!/usr/bin/python
 import logging
 import requests
+import argparse
 import json
 import yaml
+import sys
+from gateways import config
 from urllib2 import Request, urlopen
 from urllib import urlencode
 from slacker import Slacker
+from gateways import aws_sns as sns
+
 
 class Zabbix(object):
 	def User_Login(self,zabbix_api_url,uname,password):
@@ -29,7 +34,7 @@ class Zabbix(object):
 		
 
 z = Zabbix()
-z_login = z.User_Login('http://type_zabbixurl/api_jsonrpc.php', 'type_zabbix_uname', 'type_zabbix_password')
+z_login = z.User_Login(config.Z_url, config.Z_user, config.Z_password)
 
 
 def GetInfo():
@@ -103,16 +108,6 @@ def ZabbixVar():
         Message = GetInfo()[0][u'description']
         Message = str(Message)
         Message = Message.replace("{HOSTNAME}", HName)
-        return (Priority, TrigID, HName, Message)
-
-
-def ZabbixVar():
-        Priority = GetInfo()[0][u'priority']
-        TrigID = GetInfo()[0][u'triggerid']
-        HName = GetHostName()[0][u'name']
-        Message = GetInfo()[0][u'description']
-        Message = str(Message)
-        Message = Message.replace("{HOSTNAME}", HName)
         return (int(Priority), TrigID, HName, Message)
 
 def ZabbixLog():
@@ -129,25 +124,54 @@ def UniPhonic(appsid, mobile, message):
                 return SendSms
 
 def ZabbixSlack():
-	slack = Slacker('type_slack_tocken)
-	return slack.chat.post_message('#yourchannelname', ZabbixVar()[3], username="type_name")
+	slack = Slacker(config.s_id)
+	return slack.chat.post_message(config.s_channel, ZabbixVar()[3], username=config.s_uname)
 
-def Main():	
-	if ZabbixVar()[0] <= 4:
-		ZabbixLog()
-		
+#Check if we are running this on windows platform
+is_windows = sys.platform.startswith('win')
+
+#Console Colors
+if is_windows:
+        G = Y = B = R = W = G = Y = B = R = W = '' #use no terminal colors on windows 
+else:
+        G = '\033[92m' #green
+        Y = '\033[93m' #yellow
+        B = '\033[94m' #blue
+        R = '\033[91m' #red
+        W = '\033[0m'  #white
 
 
-	else:
-		ZabbixLog()
-		UniPhonic('type_AppSid', 'type_phone_number', ZabbixVar()[3]) # you can add multiple phone numbers seperated by ,
-		ZabbixSlack()	
+def parser_error(errmsg):
+        print "Usage: python "+sys.argv[0]+" [Options] use -h for help"
+        print R+"Error: "+errmsg+W
+        sys.exit()
+
+def msg(name=None):
+    return '''  python zabbixsms.py option
+                example: python zabbixsms.py slack
+           '''
+
+def parse_args():
+        parser = argparse.ArgumentParser(prog='Zabbix SMS', description='Zabbix Alerts', usage=msg())
+        parser.error = parser_error
+        parser._optionals.title = 'OPTIONS'
+        parser.add_argument('command', help='Command')
+	return parser.parse_args()
+
+def Main():
+	args=parse_args()
+        if args.command == 'slack':
+        	ZabbixSlack()
+	if args.command == 'aws-sms':
+		sns.AWS_SNS(ZabbixVar()[3])
+        if args.command == 'uniphonic':
+        	UniPhonic(config.u_appsid, 'type phone number', ZabbixVar()[3]) # you can add multiple phone numbers seperated by ,
 	
-
+	if args.command == 'log':
+        	ZabbixLog()
 if __name__=="__main__":
 	try:
 		Main()
 
 	except:
 		ZabbixLog()
-		
